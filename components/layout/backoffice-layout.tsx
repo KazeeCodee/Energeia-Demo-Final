@@ -5,7 +5,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Upload,
-  Activity,
   FileText,
   Building2,
   Users,
@@ -76,11 +75,6 @@ const navigationItems: NavigationItem[] = [
     title: 'Empresas',
     href: '/backoffice/empresas',
     icon: Building2,
-  },
-  {
-    title: 'Logs del Sistema',
-    href: '/backoffice/logs',
-    icon: Activity,
   },
   {
     title: 'Enlaces compartidos',

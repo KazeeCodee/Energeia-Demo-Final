@@ -26,13 +26,21 @@ const CHART_META: Record<ChartComponentType, {
   accent: string;
   bg: string;
 }> = {
-  'generation-mix':   { label: 'Mix de Generación',     icon: PieChart,    accent: 'text-orange-600', bg: 'bg-orange-50' },
-  'demand-trend':     { label: 'Tendencia de Demanda',   icon: TrendingUp,  accent: 'text-blue-600',   bg: 'bg-blue-50'   },
-  'cost-comparison':  { label: 'Comparación de Costos',  icon: DollarSign,  accent: 'text-green-600',  bg: 'bg-green-50'  },
-  'multi-series':     { label: 'Gráfico Multi-Serie',    icon: LineChart,   accent: 'text-violet-600', bg: 'bg-violet-50' },
-  'custom-bar':       { label: 'Gráfico de Barras',      icon: BarChart3,   accent: 'text-slate-600',  bg: 'bg-slate-50'  },
-  'custom-line':      { label: 'Gráfico de Líneas',      icon: Activity,    accent: 'text-slate-600',  bg: 'bg-slate-50'  },
-  'custom-pie':       { label: 'Gráfico Circular',       icon: PieChart,    accent: 'text-slate-600',  bg: 'bg-slate-50'  },
+  'generation-mix':          { label: 'Mix de Generación',         icon: PieChart,    accent: 'text-orange-600', bg: 'bg-orange-50'  },
+  'demand-trend':            { label: 'Tendencia de Demanda',       icon: TrendingUp,  accent: 'text-blue-600',   bg: 'bg-blue-50'    },
+  'cost-comparison':         { label: 'Comparación de Costos',      icon: DollarSign,  accent: 'text-green-600',  bg: 'bg-green-50'   },
+  'multi-series':            { label: 'Gráfico Multi-Serie',        icon: LineChart,   accent: 'text-violet-600', bg: 'bg-violet-50'  },
+  'custom-bar':              { label: 'Gráfico de Barras',          icon: BarChart3,   accent: 'text-slate-600',  bg: 'bg-slate-50'   },
+  'custom-line':             { label: 'Gráfico de Líneas',          icon: Activity,    accent: 'text-slate-600',  bg: 'bg-slate-50'   },
+  'custom-pie':              { label: 'Gráfico Circular',           icon: PieChart,    accent: 'text-slate-600',  bg: 'bg-slate-50'   },
+  'kpi-card':                { label: 'Tarjeta KPI',                icon: TrendingUp,  accent: 'text-orange-600', bg: 'bg-orange-50'  },
+  'demanda-anual':           { label: 'Demanda Año Móvil',          icon: BarChart3,   accent: 'text-orange-600', bg: 'bg-orange-50'  },
+  'costos-mem-linea':        { label: 'Costos MEM',                 icon: LineChart,   accent: 'text-orange-600', bg: 'bg-orange-50'  },
+  'donut-guma':              { label: 'Demanda GUMA',               icon: PieChart,    accent: 'text-orange-600', bg: 'bg-orange-50'  },
+  'donut-gume':              { label: 'Demanda GUME',               icon: PieChart,    accent: 'text-blue-600',   bg: 'bg-blue-50'    },
+  'renovable-bar':           { label: 'Porcentaje Renovable',       icon: BarChart3,   accent: 'text-green-600',  bg: 'bg-green-50'   },
+  'costos-abastecimiento':   { label: 'Costos de Abastecimiento',   icon: DollarSign,  accent: 'text-green-600',  bg: 'bg-green-50'   },
+  'argentina-map':           { label: 'Mapa Argentina',             icon: Activity,    accent: 'text-orange-600', bg: 'bg-orange-50'  },
 };
 
 // ── Props ──────────────────────────────────────────────────────────────────

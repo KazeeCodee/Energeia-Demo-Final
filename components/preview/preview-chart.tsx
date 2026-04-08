@@ -67,7 +67,8 @@ const SIMULATED_DATA = {
 };
 
 export function PreviewChart({ component }: PreviewChartProps) {
-    const data = SIMULATED_DATA[component.type] || [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data = ((SIMULATED_DATA as Record<string, any[]>)[component.type] || []) as any[];
     const colors = component.config.colors || ['#FF7A00', '#3B82F6', '#10B981', '#8B5CF6'];
 
     const renderChart = () => {

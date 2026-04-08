@@ -12,49 +12,22 @@ interface ChartComponentPreviewProps {
   className?: string;
 }
 
-const componentTypeConfig = {
-  'generation-mix': {
-    icon: PieChart,
-    label: 'Mix de Generación',
-    color: 'bg-blue-500',
-    description: 'Distribución de fuentes de energía'
-  },
-  'demand-trend': {
-    icon: TrendingUp,
-    label: 'Tendencia de Demanda',
-    color: 'bg-green-500',
-    description: 'Evolución temporal de la demanda'
-  },
-  'cost-comparison': {
-    icon: DollarSign,
-    label: 'Comparación de Costos',
-    color: 'bg-orange-500',
-    description: 'Análisis comparativo de costos'
-  },
-  'multi-series': {
-    icon: LineChart,
-    label: 'Series Múltiples',
-    color: 'bg-purple-500',
-    description: 'Múltiples series de datos'
-  },
-  'custom-bar': {
-    icon: BarChart3,
-    label: 'Gráfico de Barras',
-    color: 'bg-indigo-500',
-    description: 'Gráfico de barras personalizado'
-  },
-  'custom-line': {
-    icon: LineChart,
-    label: 'Gráfico de Líneas',
-    color: 'bg-teal-500',
-    description: 'Gráfico de líneas personalizado'
-  },
-  'custom-pie': {
-    icon: PieChart,
-    label: 'Gráfico Circular',
-    color: 'bg-pink-500',
-    description: 'Gráfico circular personalizado'
-  }
+const componentTypeConfig: Record<string, { icon: React.ComponentType<{ className?: string }>; label: string; color: string; description: string }> = {
+  'generation-mix':         { icon: PieChart,    label: 'Mix de Generación',         color: 'bg-orange-500', description: 'Distribución de fuentes de energía'        },
+  'demand-trend':           { icon: TrendingUp,  label: 'Tendencia de Demanda',       color: 'bg-blue-500',   description: 'Evolución temporal de la demanda'          },
+  'cost-comparison':        { icon: DollarSign,  label: 'Comparación de Costos',      color: 'bg-green-500',  description: 'Análisis comparativo de costos'            },
+  'multi-series':           { icon: LineChart,   label: 'Series Múltiples',           color: 'bg-purple-500', description: 'Múltiples series de datos'                 },
+  'custom-bar':             { icon: BarChart3,   label: 'Gráfico de Barras',          color: 'bg-indigo-500', description: 'Gráfico de barras personalizado'           },
+  'custom-line':            { icon: LineChart,   label: 'Gráfico de Líneas',          color: 'bg-teal-500',   description: 'Gráfico de líneas personalizado'           },
+  'custom-pie':             { icon: PieChart,    label: 'Gráfico Circular',           color: 'bg-pink-500',   description: 'Gráfico circular personalizado'            },
+  'kpi-card':               { icon: TrendingUp,  label: 'Tarjeta KPI',                color: 'bg-orange-500', description: 'Métrica clave con variación MoM/YoY'       },
+  'demanda-anual':          { icon: BarChart3,   label: 'Demanda Año Móvil',          color: 'bg-orange-500', description: 'Barras de demanda 12 meses'                },
+  'costos-mem-linea':       { icon: LineChart,   label: 'Costos MEM',                 color: 'bg-orange-500', description: 'Línea costos USD/MWh con promedio'         },
+  'donut-guma':             { icon: PieChart,    label: 'Demanda GUMA',               color: 'bg-orange-500', description: 'Donut MATER / SPOT / PLUS'                 },
+  'donut-gume':             { icon: PieChart,    label: 'Demanda GUME',               color: 'bg-blue-500',   description: 'Donut MATER / SPOT / PLUS'                 },
+  'renovable-bar':          { icon: BarChart3,   label: 'Porcentaje Renovable',       color: 'bg-green-500',  description: 'Barras horizontales renovable'             },
+  'costos-abastecimiento':  { icon: DollarSign,  label: 'Costos Abastecimiento',      color: 'bg-green-500',  description: 'Barras horizontales USD/MWh'               },
+  'argentina-map':          { icon: BarChart3,   label: 'Mapa Argentina',             color: 'bg-orange-500', description: 'Provincias con precios por distribuidor'   },
 };
 
 export function ChartComponentPreview({ component, className }: ChartComponentPreviewProps) {

@@ -1,298 +1,339 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { ChartComponent } from '@/lib/types/constructor';
-import { GenerationMixChart } from '@/components/charts/generation-mix-chart';
-import { DemandTrendChart } from '@/components/charts/demand-trend-chart';
-import { CostComparisonChart } from '@/components/charts/cost-comparison-chart';
-import { MultiSeriesChart } from '@/components/charts/multi-series-chart';
-import { ReportChart } from '@/components/charts/report-chart';
-import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  LineChart, Line, PieChart, Pie, Cell, LabelList, ReferenceLine, Legend,
+} from 'recharts';
+import { TrendingUp, TrendingDown, Zap } from 'lucide-react';
 
-interface ConfigurableChartWrapperProps {
+const ArgentinaMap = dynamic(
+  () => import('@/components/charts/argentina-map').then(m => m.ArgentinaMap),
+  { ssr: false, loading: () => <div className="flex items-center justify-center h-full text-xs text-slate-400">Cargando mapa…</div> }
+);
+
+// ── Design tokens (igual que energy-report) ────────────────────────────────
+const C = {
+  orange:   '#E8460A',
+  green:    '#22A55B',
+  blue:     '#3B82F6',
+  teal:     '#0EA5E9',
+  brown:    '#7C3C21',
+};
+
+// ── Mock data ──────────────────────────────────────────────────────────────
+const DEMAND_DATA = [
+  { label: 'nov 24', value: 310 }, { label: 'dic 24', value: 290 },
+  { label: 'ene 25', value: 320 }, { label: 'feb 25', value: 260 },
+  { label: 'mar 25', value: 285 }, { label: 'abr 25', value: 240 },
+  { label: 'may 25', value: 215 }, { label: 'jun 25', value: 180 },
+  { label: 'jul 25', value: 161 }, { label: 'ago 25', value: 347 },
+  { label: 'sep 25', value: 341 }, { label: 'oct 25', value: 374 },
+];
+
+const COST_DATA = [
+  { month: 'nov 24', value: 52 }, { month: 'dic 24', value: 58 },
+  { month: 'ene 25', value: 61 }, { month: 'feb 25', value: 55 },
+  { month: 'mar 25', value: 63 }, { month: 'abr 25', value: 67 },
+  { month: 'may 25', value: 71 }, { month: 'jun 25', value: 69 },
+  { month: 'jul 25', value: 74 }, { month: 'ago 25', value: 78 },
+  { month: 'sep 25', value: 72 }, { month: 'oct 25', value: 76 },
+];
+
+const GEN_MIX = [
+  { name: 'Térmica',    value: 41.39, color: C.orange },
+  { name: 'Hidráulica', value: 27.70, color: C.teal   },
+  { name: 'Renovable',  value: 22.45, color: C.green  },
+  { name: 'Nuclear',    value: 8.47,  color: C.brown  },
+];
+
+const GUMA_DATA = [
+  { name: 'MATER', value: 67, color: C.green  },
+  { name: 'SPOT',  value: 21, color: C.orange },
+  { name: 'PLUS',  value: 12, color: C.blue   },
+];
+const GUME_DATA = [
+  { name: 'MATER', value: 36, color: C.green  },
+  { name: 'SPOT',  value: 48, color: C.orange },
+  { name: 'PLUS',  value: 16, color: C.blue   },
+];
+
+// ── Shared wrapper ─────────────────────────────────────────────────────────
+function ChartWrapper({ height, children }: { height: number; children: React.ReactNode }) {
+  return (
+    <div style={{ width: '100%', height }}>
+      <ResponsiveContainer width="100%" height="100%">
+        {children as React.ReactElement}
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function BarLabel(props: { x?: number; y?: number; width?: number; value?: number }) {
+  const { x = 0, y = 0, width = 0, value } = props;
+  if (!value) return null;
+  return (
+    <text x={x + width / 2} y={y - 4} fill="#64748b" textAnchor="middle" fontSize={10} fontWeight={600}>
+      {value}
+    </text>
+  );
+}
+
+// ── Individual chart renderers ─────────────────────────────────────────────
+
+function DemandaAnualChart({ height }: { height: number }) {
+  return (
+    <ChartWrapper height={height}>
+      <BarChart data={DEMAND_DATA} margin={{ top: 18, right: 8, left: -16, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+        <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+        <Tooltip contentStyle={{ background: 'white', border: 'none', borderRadius: 10, fontSize: 11 }} cursor={{ fill: 'rgba(232,70,10,0.08)' }} />
+        <Bar dataKey="value" fill={C.orange} radius={[4, 4, 0, 0]} maxBarSize={32}>
+          <LabelList content={<BarLabel />} />
+        </Bar>
+      </BarChart>
+    </ChartWrapper>
+  );
+}
+
+function CostosMemChart({ height }: { height: number }) {
+  const avg = Math.round(COST_DATA.reduce((s, d) => s + d.value, 0) / COST_DATA.length);
+  return (
+    <ChartWrapper height={height}>
+      <LineChart data={COST_DATA} margin={{ top: 18, right: 8, left: -16, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+        <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+        <Tooltip contentStyle={{ background: 'white', border: 'none', borderRadius: 10, fontSize: 11 }} />
+        <ReferenceLine y={avg} stroke="#94a3b8" strokeDasharray="4 3" strokeWidth={1.5} />
+        <Line type="monotone" dataKey="value" stroke={C.orange} strokeWidth={2.5}
+          dot={{ fill: 'white', stroke: C.orange, strokeWidth: 2, r: 3 }}
+          activeDot={{ r: 4, fill: C.orange }}>
+          <LabelList dataKey="value" position="top" style={{ fontSize: 9, fill: '#64748b', fontWeight: 600 }} />
+        </Line>
+      </LineChart>
+    </ChartWrapper>
+  );
+}
+
+function DonutChart({ data, label, height }: { data: typeof GUMA_DATA; label: string; height: number }) {
+  return (
+    <div style={{ height }} className="relative flex items-center gap-4">
+      <div className="relative" style={{ width: 120, height: 120, flexShrink: 0 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie data={data} cx="50%" cy="50%" innerRadius={36} outerRadius={54}
+              dataKey="value" startAngle={90} endAngle={-270} strokeWidth={0}>
+              {data.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <span className="text-sm font-extrabold text-slate-800 leading-tight">{label}</span>
+        </div>
+      </div>
+      <div className="space-y-1.5">
+        {data.map((item, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
+            <span className="text-xs text-slate-600 font-medium">{item.name} {item.value}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function RenovableBarChart({ height }: { height: number }) {
+  return (
+    <div style={{ height }} className="flex flex-col justify-center space-y-4 px-2">
+      <div>
+        <div className="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+          <span>SARIPÓN</span><span style={{ color: C.green }}>71 %</span>
+        </div>
+        <div className="w-full bg-slate-100 rounded-full h-5">
+          <div className="h-5 rounded-full" style={{ width: '71%', backgroundColor: C.green }} />
+        </div>
+      </div>
+      <div>
+        <div className="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+          <span>Renovable Total</span><span style={{ color: C.blue }}>24 %</span>
+        </div>
+        <div className="w-full bg-slate-100 rounded-full h-5">
+          <div className="h-5 rounded-full" style={{ width: '24%', backgroundColor: C.blue }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CostosAbastecimientoChart({ height }: { height: number }) {
+  const items = [
+    { name: 'Renovable', val: 71.67, color: C.green },
+    { name: 'CAMMESA',   val: 64.14, color: C.orange },
+  ];
+  return (
+    <div style={{ height }} className="flex flex-col justify-center space-y-5 px-2">
+      {items.map(row => (
+        <div key={row.name}>
+          <p className="text-xs font-semibold text-slate-500 mb-1">{row.name}</p>
+          <div className="flex items-center gap-2">
+            <div className="flex-1 bg-slate-100 rounded-full h-4">
+              <div className="h-4 rounded-full" style={{ width: `${(row.val / 120) * 100}%`, backgroundColor: row.color }} />
+            </div>
+            <span className="text-xs font-bold text-slate-700 w-10 text-right">{row.val}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function KpiCardChart({ title, height }: { title: string; height: number }) {
+  return (
+    <div style={{ height }} className="flex flex-col justify-center">
+      <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">{title || 'KPI Energía'}</p>
+      <p className="text-4xl font-extrabold text-slate-900 leading-none">
+        12.450 <span className="text-xl font-bold text-slate-500 ml-1">MWh</span>
+      </p>
+      <div className="flex gap-4 mt-3">
+        <div className="text-center">
+          <div className="flex items-center gap-1 font-semibold text-base text-green-600">
+            <TrendingUp className="h-3 w-3" />+3.2 %
+          </div>
+          <p className="text-xs text-slate-400 font-medium">MoM</p>
+        </div>
+        <div className="text-center">
+          <div className="flex items-center gap-1 font-semibold text-base text-green-600">
+            <TrendingUp className="h-3 w-3" />+8.1 %
+          </div>
+          <p className="text-xs text-slate-400 font-medium">YoY</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GenerationMixDonut({ height }: { height: number }) {
+  return (
+    <div style={{ height }} className="relative flex items-center gap-4">
+      <div className="relative" style={{ width: 120, height: 120, flexShrink: 0 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie data={GEN_MIX} cx="50%" cy="50%" innerRadius={36} outerRadius={54}
+              dataKey="value" startAngle={90} endAngle={-270} strokeWidth={0}>
+              {GEN_MIX.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="space-y-1.5">
+        {GEN_MIX.map((item, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+            <span className="text-xs text-slate-600 font-medium">{item.name} {item.value}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CustomBarChartFn({ component, height }: { component: ChartComponent; height: number }) {
+  const data = component.dataSource.sampleData || [];
+  return (
+    <ChartWrapper height={height}>
+      <BarChart data={data} margin={{ top: 18, right: 8, left: -16, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+        <XAxis dataKey="category" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+        <Tooltip contentStyle={{ background: 'white', border: 'none', borderRadius: 10, fontSize: 11 }} cursor={{ fill: 'rgba(232,70,10,0.08)' }} />
+        <Bar dataKey="value" fill={component.config.colors?.[0] || C.orange} radius={[4, 4, 0, 0]} maxBarSize={40}>
+          <LabelList content={<BarLabel />} />
+        </Bar>
+      </BarChart>
+    </ChartWrapper>
+  );
+}
+
+function CustomLineChartFn({ component, height }: { component: ChartComponent; height: number }) {
+  const data = component.dataSource.sampleData || [];
+  return (
+    <ChartWrapper height={height}>
+      <LineChart data={data} margin={{ top: 18, right: 8, left: -16, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+        <XAxis dataKey="category" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+        <Tooltip contentStyle={{ background: 'white', border: 'none', borderRadius: 10, fontSize: 11 }} />
+        <Line type="monotone" dataKey="value" stroke={component.config.colors?.[0] || C.orange} strokeWidth={2.5}
+          dot={{ fill: 'white', stroke: component.config.colors?.[0] || C.orange, strokeWidth: 2, r: 3 }} />
+      </LineChart>
+    </ChartWrapper>
+  );
+}
+
+function CustomPieChartFn({ component, height }: { component: ChartComponent; height: number }) {
+  const raw = component.dataSource.sampleData || [];
+  const pieData = raw.map((item: Record<string, unknown>, i: number) => ({
+    name: String(item.category ?? `Item ${i + 1}`),
+    value: Number(item.value ?? 0),
+    color: (component.config.colors ?? [])[i % (component.config.colors?.length || 1)] || C.orange,
+  }));
+  return (
+    <ChartWrapper height={height}>
+      <PieChart>
+        <Pie data={pieData} cx="50%" cy="50%" innerRadius="20%" outerRadius="65%"
+          paddingAngle={2} dataKey="value" strokeWidth={0}>
+          {pieData.map((entry: { color: string }, i: number) => <Cell key={i} fill={entry.color} />)}
+        </Pie>
+        <Tooltip contentStyle={{ background: 'white', border: 'none', borderRadius: 10, fontSize: 11 }} />
+        <Legend wrapperStyle={{ fontSize: 11 }} />
+      </PieChart>
+    </ChartWrapper>
+  );
+}
+
+// ── Main export ────────────────────────────────────────────────────────────
+
+interface Props {
   component: ChartComponent;
   className?: string;
 }
 
-// Helper functions to transform data source to chart-specific format
-function transformGenerationMixData(component: ChartComponent) {
-  const { dataSource } = component;
-  if (dataSource.sampleData && dataSource.sampleData.length > 0) {
-    const data = dataSource.sampleData[0] as Record<string, unknown>;
-    return {
-      thermal: typeof data.thermal === 'number' ? data.thermal : 0,
-      hydraulic: typeof data.hydraulic === 'number' ? data.hydraulic : 0,
-      nuclear: typeof data.nuclear === 'number' ? data.nuclear : 0,
-      renewable: typeof data.renewable === 'number' ? data.renewable : 0,
-    };
-  }
-  return { thermal: 45, hydraulic: 25, nuclear: 15, renewable: 15 };
-}
-
-function transformDemandTrendData(component: ChartComponent) {
-  const { dataSource } = component;
-  const defaultData = [
-    { month: 'Ene', demand: 1200, monthlyDemand: 1200 },
-    { month: 'Feb', demand: 1150, monthlyDemand: 1150 },
-    { month: 'Mar', demand: 1300, monthlyDemand: 1300 },
-  ];
-  
-  if (dataSource.sampleData && Array.isArray(dataSource.sampleData)) {
-    return dataSource.sampleData.map((item: unknown) => {
-      const data = item as Record<string, unknown>;
-      return {
-        month: typeof data.month === 'string' ? data.month : 'N/A',
-        demand: typeof data.demand === 'number' ? data.demand : 0,
-        monthlyDemand: typeof data.monthlyDemand === 'number' ? data.monthlyDemand : (typeof data.demand === 'number' ? data.demand : 0),
-      };
-    });
-  }
-  
-  return defaultData;
-}
-
-function transformCostComparisonData(component: ChartComponent) {
-  const { dataSource } = component;
-  const costData = dataSource.sampleData || [
-    { category: 'CAMMESA', cost: 45.2, budget: 50.0 },
-    { category: 'PLUS', cost: 38.7, budget: 40.0 },
-    { category: 'Renovable', cost: 42.1, budget: 45.0 },
-  ];
-  
-  // Create mock MEM costs structure
-  const memCosts = [
-    { 
-      month: '2024-01', 
-      cammesa: (costData.find((d: Record<string, unknown>) => d.category === 'CAMMESA') as { cost?: number })?.cost || 45.2,
-      plus: (costData.find((d: Record<string, unknown>) => d.category === 'PLUS') as { cost?: number })?.cost || 38.7,
-      renewable: (costData.find((d: Record<string, unknown>) => d.category === 'Renovable') as { cost?: number })?.cost || 42.1
-    }
-  ];
-  
-  const supplyCosts = [
-    { month: '2024-01', cost: 50.0 }
-  ];
-  
-  return { memCosts, supplyCosts };
-}
-
-function transformCustomData(component: ChartComponent) {
-  const { dataSource } = component;
-  return dataSource.sampleData || [];
-}
-
-// Custom chart components for types not covered by existing charts
-function CustomBarChart({ component }: { component: ChartComponent }) {
-  const data = transformCustomData(component);
-  const { config } = component;
-
-  return (
-    <ReportChart
-      title={config.title}
-      subtitle={config.subtitle}
-      height={config.height}
-    >
-      <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-        <XAxis 
-          dataKey="category" 
-          stroke="#6B7280"
-          fontSize={12}
-        />
-        <YAxis 
-          stroke="#6B7280"
-          fontSize={12}
-        />
-        {config.showTooltip && <Tooltip />}
-        {config.showLegend && <Legend />}
-        
-        <Bar
-          dataKey="value"
-          fill={config.colors[0] || '#FF7A00'}
-          radius={[2, 2, 0, 0]}
-        />
-      </BarChart>
-    </ReportChart>
-  );
-}
-
-function CustomLineChart({ component }: { component: ChartComponent }) {
-  const data = transformCustomData(component);
-  const { config } = component;
-
-  return (
-    <ReportChart
-      title={config.title}
-      subtitle={config.subtitle}
-      height={config.height}
-    >
-      <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-        <XAxis 
-          dataKey="category" 
-          stroke="#6B7280"
-          fontSize={12}
-        />
-        <YAxis 
-          stroke="#6B7280"
-          fontSize={12}
-        />
-        {config.showTooltip && <Tooltip />}
-        {config.showLegend && <Legend />}
-        
-        <Line
-          type="monotone"
-          dataKey="value"
-          stroke={config.colors[0] || '#FF7A00'}
-          strokeWidth={2}
-          dot={{ r: 4 }}
-          activeDot={{ r: 6, strokeWidth: 2 }}
-        />
-      </LineChart>
-    </ReportChart>
-  );
-}
-
-function CustomPieChart({ component }: { component: ChartComponent }) {
-  const data = transformCustomData(component);
-  const { config } = component;
-
-  // Transform data for pie chart
-  const pieData = Array.isArray(data) ? data.map((item, index) => ({
-    name: item.category || `Item ${index + 1}`,
-    value: item.value || 0,
-    color: config.colors[index % config.colors.length] || '#FF7A00'
-  })) : [];
-
-  return (
-    <ReportChart
-      title={config.title}
-      subtitle={config.subtitle}
-      height={config.height}
-    >
-      <PieChart>
-        <Pie
-          data={pieData}
-          cx="50%"
-          cy="50%"
-          innerRadius="20%"
-          outerRadius="70%"
-          paddingAngle={2}
-          dataKey="value"
-        >
-          {pieData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={entry.color} />
-          ))}
-        </Pie>
-        {config.showTooltip && <Tooltip />}
-        {config.showLegend && <Legend />}
-      </PieChart>
-    </ReportChart>
-  );
-}
-
-export function ConfigurableChartWrapper({ component, className }: ConfigurableChartWrapperProps) {
-  const { type, config } = component;
+export function ConfigurableChartWrapper({ component }: Props) {
+  const height = component.config.height || 260;
 
   try {
-    switch (type) {
-      case 'generation-mix':
-        const generationData = transformGenerationMixData(component);
-        return (
-          <GenerationMixChart
-            data={generationData}
-            title={config.title}
-            subtitle={config.subtitle}
-            height={config.height}
-            className={className}
-          />
-        );
-
-      case 'demand-trend':
-        const demandData = transformDemandTrendData(component);
-        return (
-          <DemandTrendChart
-            data={demandData}
-            title={config.title}
-            subtitle={config.subtitle}
-            height={config.height}
-            className={className}
-          />
-        );
-
-      case 'cost-comparison':
-        const costData = transformCostComparisonData(component);
-        return (
-          <CostComparisonChart
-            memCosts={costData.memCosts}
-            supplyCosts={costData.supplyCosts}
-            title={config.title}
-            subtitle={config.subtitle}
-            height={config.height}
-            className={className}
-          />
-        );
-
-      case 'multi-series':
-        const multiSeriesData = transformCustomData(component);
-        return (
-          <MultiSeriesChart
-            type="line"
-            data={multiSeriesData}
-            config={{
-              colors: config.colors,
-              showLegend: config.showLegend,
-              showTooltip: config.showTooltip,
-            }}
-            title={config.title}
-            subtitle={config.subtitle}
-            height={config.height}
-            className={className}
-          />
-        );
-
-      case 'custom-bar':
-        return <CustomBarChart component={component} />;
-
-      case 'custom-line':
-        return <CustomLineChart component={component} />;
-
-      case 'custom-pie':
-        return <CustomPieChart component={component} />;
-
+    switch (component.type) {
+      case 'demanda-anual':      return <DemandaAnualChart height={height} />;
+      case 'costos-mem-linea':   return <CostosMemChart height={height} />;
+      case 'donut-guma':         return <DonutChart data={GUMA_DATA} label="GUMA" height={height} />;
+      case 'donut-gume':         return <DonutChart data={GUME_DATA} label="GUME" height={height} />;
+      case 'renovable-bar':      return <RenovableBarChart height={height} />;
+      case 'costos-abastecimiento': return <CostosAbastecimientoChart height={height} />;
+      case 'kpi-card':           return <KpiCardChart title={component.config.title || ''} height={height} />;
+      case 'generation-mix':     return <GenerationMixDonut height={height} />;
+      case 'argentina-map':      return <div style={{ height }}><ArgentinaMap /></div>;
+      case 'demand-trend':       return <DemandaAnualChart height={height} />;
+      case 'cost-comparison':    return <CostosAbastecimientoChart height={height} />;
+      case 'custom-bar':         return <CustomBarChartFn component={component} height={height} />;
+      case 'custom-line':        return <CustomLineChartFn component={component} height={height} />;
+      case 'custom-pie':         return <CustomPieChartFn component={component} height={height} />;
+      case 'multi-series':       return <CostosMemChart height={height} />;
       default:
         return (
-          <ReportChart
-            title={config.title || 'Gráfico no soportado'}
-            subtitle={config.subtitle}
-            height={config.height}
-            className={className}
-          >
-            <div className="flex items-center justify-center h-full text-muted-foreground">
-              <div className="text-center">
-                <p className="text-sm">Tipo de gráfico no soportado: {type}</p>
-                <p className="text-xs mt-1">Selecciona un tipo de gráfico válido</p>
-              </div>
-            </div>
-          </ReportChart>
+          <div style={{ height }} className="flex items-center justify-center text-xs text-slate-400">
+            Tipo de gráfico no soportado
+          </div>
         );
     }
-  } catch (error) {
-    console.error('Error rendering chart:', error);
-    
+  } catch {
     return (
-      <ReportChart
-        title={config.title || 'Error en el gráfico'}
-        subtitle="Error al cargar los datos"
-        height={config.height}
-        className={className}
-      >
-        <div className="flex items-center justify-center h-full text-destructive">
-          <div className="text-center">
-            <p className="text-sm">Error al renderizar el gráfico</p>
-            <p className="text-xs mt-1">Verifica la configuración y los datos</p>
-          </div>
-        </div>
-      </ReportChart>
+      <div style={{ height }} className="flex items-center justify-center text-xs text-red-400">
+        Error al renderizar gráfico
+      </div>
     );
   }
 }

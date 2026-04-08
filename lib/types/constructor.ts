@@ -26,14 +26,23 @@ export interface ChartComponent {
   dataSource: DataSource;
 }
 
-export type ChartComponentType = 
+export type ChartComponentType =
   | 'generation-mix'
-  | 'demand-trend' 
+  | 'demand-trend'
   | 'cost-comparison'
   | 'multi-series'
   | 'custom-bar'
   | 'custom-line'
-  | 'custom-pie';
+  | 'custom-pie'
+  // Gráficos del informe energético real
+  | 'kpi-card'
+  | 'demanda-anual'
+  | 'costos-mem-linea'
+  | 'donut-guma'
+  | 'donut-gume'
+  | 'renovable-bar'
+  | 'costos-abastecimiento'
+  | 'argentina-map';
 
 export interface ChartConfig {
   title?: string;

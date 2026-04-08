@@ -240,13 +240,21 @@ export class ReportValidationService {
     spaceId: string
   ): ValidationError | null {
     const requiredFieldTypes: Record<ChartComponentType, string[]> = {
-      'generation-mix': ['percentage'],
-      'demand-trend': ['number', 'string'],
-      'cost-comparison': ['number', 'string'],
-      'multi-series': ['number'],
-      'custom-bar': ['number', 'string'],
-      'custom-line': ['number'],
-      'custom-pie': ['percentage', 'number'],
+      'generation-mix':         ['percentage'],
+      'demand-trend':           ['number', 'string'],
+      'cost-comparison':        ['number', 'string'],
+      'multi-series':           ['number'],
+      'custom-bar':             ['number', 'string'],
+      'custom-line':            ['number'],
+      'custom-pie':             ['percentage', 'number'],
+      'kpi-card':               [],
+      'demanda-anual':          [],
+      'costos-mem-linea':       [],
+      'donut-guma':             [],
+      'donut-gume':             [],
+      'renovable-bar':          [],
+      'costos-abastecimiento':  [],
+      'argentina-map':          [],
     };
 
     const requiredTypes = requiredFieldTypes[chartType];

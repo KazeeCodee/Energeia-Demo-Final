@@ -14,13 +14,21 @@ import { cn } from '@/lib/utils';
 
 export function getDefaultTitle(type: ChartComponentType): string {
   const titles: Record<ChartComponentType, string> = {
-    'generation-mix': 'Mix de Generación',
-    'demand-trend': 'Tendencia de Demanda',
-    'cost-comparison': 'Comparación de Costos',
-    'multi-series': 'Gráfico Multi-Series',
-    'custom-bar': 'Gráfico de Barras',
-    'custom-line': 'Gráfico de Líneas',
-    'custom-pie': 'Gráfico Circular',
+    'generation-mix':          'Mix de Generación',
+    'demand-trend':            'Tendencia de Demanda',
+    'cost-comparison':         'Comparación de Costos',
+    'multi-series':            'Gráfico Multi-Series',
+    'custom-bar':              'Gráfico de Barras',
+    'custom-line':             'Gráfico de Líneas',
+    'custom-pie':              'Gráfico Circular',
+    'kpi-card':                'KPI Energía',
+    'demanda-anual':           'Demanda Año Móvil',
+    'costos-mem-linea':        'Costos MEM — USD/MWh',
+    'donut-guma':              'Demanda GUMA',
+    'donut-gume':              'Demanda GUME',
+    'renovable-bar':           'Porcentaje Renovable',
+    'costos-abastecimiento':   'Costos de Abastecimiento',
+    'argentina-map':           'Precios MEM vs Distribuidor',
   };
   return titles[type] ?? 'Gráfico';
 }
@@ -70,6 +78,19 @@ export function getDefaultDataSource(type: ChartComponentType): DataSource {
       ],
     },
   };
+
+  // Fuentes para tipos del informe real
+  const reportSources: Partial<Record<ChartComponentType, DataSource>> = {
+    'demanda-anual':          { id: 'demanda-anual',          name: 'Demanda Año Móvil',       type: 'demand',  fields: [], sampleData: [] },
+    'costos-mem-linea':       { id: 'costos-mem',             name: 'Costos MEM USD/MWh',      type: 'cost',    fields: [], sampleData: [] },
+    'donut-guma':             { id: 'guma',                   name: 'Demanda GUMA',            type: 'demand',  fields: [], sampleData: [] },
+    'donut-gume':             { id: 'gume',                   name: 'Demanda GUME',            type: 'demand',  fields: [], sampleData: [] },
+    'renovable-bar':          { id: 'renovable',              name: 'Porcentaje Renovable',    type: 'custom',  fields: [], sampleData: [] },
+    'costos-abastecimiento':  { id: 'costos-abast',           name: 'Costos Abastecimiento',   type: 'cost',    fields: [], sampleData: [] },
+    'kpi-card':               { id: 'kpi',                    name: 'KPI Energía',             type: 'custom',  fields: [], sampleData: [] },
+    'argentina-map':          { id: 'argentina-map',          name: 'Precios por Distribuidor',type: 'custom',  fields: [], sampleData: [] },
+  };
+  if (reportSources[type]) return reportSources[type]!;
 
   return sources[type] ?? {
     id: 'custom-data',
@@ -162,7 +183,7 @@ function CostPreview() {
 
 // ── Catalogue ──────────────────────────────────────────────────────────────
 
-type Category = 'energy' | 'demand' | 'cost' | 'custom';
+type Category = 'energy' | 'demand' | 'cost' | 'custom' | 'report';
 
 interface ChartInfo {
   type: ChartComponentType;
@@ -172,53 +193,121 @@ interface ChartInfo {
   preview: React.ReactNode;
 }
 
+function KpiPreview() {
+  return (
+    <svg viewBox="0 0 48 32" className="w-12 h-8">
+      <text x="2" y="22" fontSize="18" fontWeight="bold" fill="#1e293b">374</text>
+      <text x="34" y="22" fontSize="9" fill="#64748b">MWh</text>
+      <text x="2" y="30" fontSize="6" fill="#22a55b">▲ +3.2%</text>
+    </svg>
+  );
+}
+
+function MapPreview() {
+  return (
+    <svg viewBox="0 0 40 48" className="w-10 h-12">
+      <path d="M18 2 L28 4 L34 10 L36 20 L32 32 L28 42 L22 46 L16 44 L10 36 L6 26 L8 14 L12 6 Z" fill="#E8460A" opacity="0.9" stroke="white" strokeWidth="0.8" />
+      <path d="M18 2 L28 4 L26 14 L18 16 L10 14 L12 6 Z" fill="#C83A08" opacity="0.6" stroke="white" strokeWidth="0.5" />
+      <path d="M8 14 L18 16 L26 14 L28 24 L22 28 L14 26 L6 26 Z" fill="#E8460A" opacity="0.7" stroke="white" strokeWidth="0.5" />
+    </svg>
+  );
+}
+
+function HBarPreview() {
+  return (
+    <svg viewBox="0 0 48 28" className="w-12 h-7">
+      <rect x="2" y="4"  width="36" height="7" rx="3" fill="#22A55B" opacity="0.85" />
+      <rect x="2" y="16" width="28" height="7" rx="3" fill="#E8460A" opacity="0.85" />
+      <text x="40" y="10" fontSize="7" fill="#64748b">71</text>
+      <text x="32" y="22" fontSize="7" fill="#64748b">64</text>
+    </svg>
+  );
+}
+
 const CHARTS: ChartInfo[] = [
+  // ── Del informe energético real ──────────────────────────────────────────
   {
-    type: 'generation-mix',
-    name: 'Mix de Generación',
-    description: 'Distribución por tipo: Térmica, Hidráulica, Nuclear, Renovable',
-    category: 'energy',
-    preview: <PiePreview />,
+    type: 'demanda-anual',
+    name: 'Demanda Año Móvil',
+    description: 'Barras mensuales de demanda energética (MWh) — últimos 12 meses',
+    category: 'report',
+    preview: <BarPreview />,
   },
   {
-    type: 'demand-trend',
-    name: 'Tendencia de Demanda',
-    description: 'Evolución de la demanda energética en MWh',
-    category: 'demand',
+    type: 'costos-mem-linea',
+    name: 'Costos MEM',
+    description: 'Línea de costos USD/MWh con línea de promedio de referencia',
+    category: 'report',
     preview: <LinePreview />,
   },
   {
-    type: 'cost-comparison',
-    name: 'Comparación de Costos',
-    description: 'Barras + línea para costos vs presupuesto',
-    category: 'cost',
-    preview: <CostPreview />,
+    type: 'donut-guma',
+    name: 'Demanda GUMA',
+    description: 'Donut MATER / SPOT / PLUS para demanda GUMA',
+    category: 'report',
+    preview: <PiePreview donut />,
   },
   {
-    type: 'multi-series',
-    name: 'Multi-Series',
-    description: 'Varias líneas para comparar series de datos',
-    category: 'custom',
-    preview: <LinePreview multi />,
+    type: 'donut-gume',
+    name: 'Demanda GUME',
+    description: 'Donut MATER / SPOT / PLUS para demanda GUME',
+    category: 'report',
+    preview: <PiePreview donut />,
   },
+  {
+    type: 'renovable-bar',
+    name: 'Porcentaje Renovable',
+    description: 'Barras horizontales de porcentaje renovable por punto de suministro',
+    category: 'report',
+    preview: <HBarPreview />,
+  },
+  {
+    type: 'costos-abastecimiento',
+    name: 'Costos de Abastecimiento',
+    description: 'Barras horizontales de costos Renovable vs CAMMESA en USD/MWh',
+    category: 'report',
+    preview: <HBarPreview />,
+  },
+  {
+    type: 'kpi-card',
+    name: 'Tarjeta KPI',
+    description: 'Número grande con variación MoM y YoY — ideal para métricas clave',
+    category: 'report',
+    preview: <KpiPreview />,
+  },
+  {
+    type: 'generation-mix',
+    name: 'Mix de Generación',
+    description: 'Donut con Térmica, Hidráulica, Nuclear y Renovable',
+    category: 'report',
+    preview: <PiePreview />,
+  },
+  {
+    type: 'argentina-map',
+    name: 'Mapa Argentina',
+    description: 'Mapa de provincias con precios MEM por distribuidor',
+    category: 'report',
+    preview: <MapPreview />,
+  },
+  // ── Personalizados ────────────────────────────────────────────────────────
   {
     type: 'custom-bar',
     name: 'Barras',
-    description: 'Gráfico de barras para datos categóricos',
+    description: 'Gráfico de barras para datos categóricos personalizados',
     category: 'custom',
     preview: <BarPreview />,
   },
   {
     type: 'custom-line',
     name: 'Línea',
-    description: 'Línea para tendencias temporales',
+    description: 'Línea para tendencias temporales personalizadas',
     category: 'custom',
     preview: <LinePreview />,
   },
   {
     type: 'custom-pie',
     name: 'Circular',
-    description: 'Torta para distribuciones porcentuales',
+    description: 'Torta / donut para distribuciones porcentuales',
     category: 'custom',
     preview: <PiePreview donut />,
   },
@@ -226,9 +315,7 @@ const CHARTS: ChartInfo[] = [
 
 const CATEGORY_TABS: { key: Category | 'all'; label: string }[] = [
   { key: 'all',    label: 'Todos'         },
-  { key: 'energy', label: 'Energía'       },
-  { key: 'demand', label: 'Demanda'       },
-  { key: 'cost',   label: 'Costos'        },
+  { key: 'report', label: 'Informe'       },
   { key: 'custom', label: 'Personalizado' },
 ];
 
@@ -237,6 +324,7 @@ const CATEGORY_DOT: Record<Category, string> = {
   demand: 'bg-blue-400',
   cost:   'bg-green-400',
   custom: 'bg-slate-400',
+  report: 'bg-orange-500',
 };
 
 // ── Component ──────────────────────────────────────────────────────────────

@@ -70,8 +70,8 @@ export function ArgentinaMap({ title, subtitle }: ArgentinaMapProps) {
         >
           {/* Province fills + borders */}
           <Geographies geography={GEO_URL}>
-            {({ geographies }) =>
-              geographies.map((geo) => (
+            {({ geographies }: { geographies: any[] }) =>
+              geographies.map((geo: any) => (
                 <Geography
                   key={geo.rsmKey}
                   geography={geo}

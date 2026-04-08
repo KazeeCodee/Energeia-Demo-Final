@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ReportConfig, GridSpace, ChartComponent, ValidationError } from '../types/constructor';
+import { ReportConfig, GridSpace, ChartComponent, ValidationError, DataSource } from '../types/constructor';
 import { ReportValidationService } from '../services/validation';
 import { constructorLogger, measurePerformance } from '../services/logging';
 import { defaultDataSources } from '../data/default-data-sources';

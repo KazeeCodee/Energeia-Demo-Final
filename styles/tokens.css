@@ -1,0 +1,174 @@
+:root {
+  /* Colors */
+  --bg: #F8FAFC;
+  --surface: #FFFFFF;
+  --text: #0F172A;
+  --muted: #475569;
+  --border: #E5E7EB;
+  --accent: #FF7A00;
+  --accent-soft: #FFE8D6;
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --error: #EF4444;
+  
+  /* Typography */
+  --font-family: 'Inter', sans-serif;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  
+  /* Borders */
+  --radius: 0.75rem;
+  --border-width: 1px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+/* Chart Colors */
+:root {
+  --chart-thermal: #64748B;
+  --chart-hydraulic: #3B82F6;
+  --chart-nuclear: #8B5CF6;
+  --chart-renewable: #22C55E;
+  --chart-accent: var(--accent);
+  --chart-grid: #F1F5F9;
+  --chart-text: var(--muted);
+}
+
+/* Focus States */
+.focus-ring {
+  @apply ring-2 ring-orange-500 ring-offset-2 outline-none;
+}
+
+/* Enhanced focus styles for better accessibility */
+.focus-visible-ring {
+  @apply focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 focus-visible:outline-none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .focus-ring,
+  .focus-visible-ring {
+    @apply ring-4 ring-orange-600;
+  }
+}
+
+/* Loading States */
+.loading-skeleton {
+  @apply animate-pulse bg-gray-200 rounded;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .loading-skeleton {
+    @apply animate-none;
+  }
+  
+  .transition-smooth {
+    @apply transition-none;
+  }
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Transitions */
+.transition-smooth {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip to main content link */
+.skip-link {
+  @apply absolute -top-10 left-4 z-50 bg-orange-500 text-white px-4 py-2 rounded-md;
+  @apply focus:top-4 transition-all duration-200;
+}
+
+/* Touch target sizing for mobile */
+@media (max-width: 768px) {
+  button, 
+  [role="button"], 
+  input[type="button"], 
+  input[type="submit"], 
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Responsive text sizing */
+.text-responsive-sm {
+  @apply text-sm md:text-base;
+}
+
+.text-responsive-base {
+  @apply text-base md:text-lg;
+}
+
+.text-responsive-lg {
+  @apply text-lg md:text-xl;
+}
+
+.text-responsive-xl {
+  @apply text-xl md:text-2xl;
+}
+
+/* Responsive spacing */
+.space-responsive {
+  @apply space-y-4 md:space-y-6;
+}
+
+.p-responsive {
+  @apply p-4 md:p-6;
+}
+
+.m-responsive {
+  @apply m-4 md:m-6;
+}
+
+/* Container responsive padding */
+.container-responsive {
+  @apply px-4 sm:px-6 lg:px-8;
+}
+
+/* Grid responsive */
+.grid-responsive {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6;
+}
+
+/* Card responsive */
+.card-responsive {
+  @apply p-4 md:p-6 rounded-lg border border-slate-200 bg-white shadow-sm;
+}
+
+/* Button responsive */
+.button-responsive {
+  @apply px-4 py-2 md:px-6 md:py-3 text-sm md:text-base;
+}

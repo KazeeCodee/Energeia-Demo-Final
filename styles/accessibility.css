@@ -1,0 +1,317 @@
+/* Accessibility Enhancement Styles */
+
+/* High Contrast Mode */
+.high-contrast {
+  --background: #000000;
+  --foreground: #ffffff;
+  --muted: #333333;
+  --muted-foreground: #cccccc;
+  --border: #666666;
+  --primary: #ffff00;
+  --primary-foreground: #000000;
+  --secondary: #ffffff;
+  --secondary-foreground: #000000;
+  --destructive: #ff0000;
+  --destructive-foreground: #ffffff;
+}
+
+.high-contrast * {
+  border-color: var(--border) !important;
+}
+
+.high-contrast button,
+.high-contrast [role="button"] {
+  border: 2px solid var(--border) !important;
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+.high-contrast button:hover,
+.high-contrast [role="button"]:hover {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+/* Large Text Mode */
+.large-text {
+  font-size: 1.125rem; /* 18px base instead of 16px */
+}
+
+.large-text .text-xs {
+  font-size: 0.875rem; /* 14px instead of 12px */
+}
+
+.large-text .text-sm {
+  font-size: 1rem; /* 16px instead of 14px */
+}
+
+.large-text .text-base {
+  font-size: 1.25rem; /* 20px instead of 16px */
+}
+
+.large-text .text-lg {
+  font-size: 1.5rem; /* 24px instead of 18px */
+}
+
+.large-text .text-xl {
+  font-size: 1.75rem; /* 28px instead of 20px */
+}
+
+/* Enhanced Focus Indicators */
+.enhanced-focus *:focus {
+  outline: 3px solid #ff7a00 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 5px rgba(255, 122, 0, 0.3) !important;
+}
+
+.enhanced-focus button:focus,
+.enhanced-focus [role="button"]:focus,
+.enhanced-focus input:focus,
+.enhanced-focus select:focus,
+.enhanced-focus textarea:focus {
+  outline: 3px solid #ff7a00 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 5px rgba(255, 122, 0, 0.3) !important;
+  transform: scale(1.05) !important;
+}
+
+/* Reduced Motion */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+.reduced-motion .animate-spin {
+  animation: none !important;
+}
+
+.reduced-motion .animate-pulse {
+  animation: none !important;
+}
+
+.reduced-motion .animate-bounce {
+  animation: none !important;
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip Links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000;
+  color: #fff;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 9999;
+  border-radius: 4px;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Keyboard Navigation Indicators */
+.keyboard-navigation [tabindex="0"]:focus,
+.keyboard-navigation button:focus,
+.keyboard-navigation [role="button"]:focus {
+  outline: 2px solid #ff7a00;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.2);
+}
+
+/* Drag and Drop Accessibility */
+[data-drag-item]:focus {
+  outline: 2px solid #ff7a00;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.2);
+}
+
+[data-drop-target]:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+[aria-grabbed="true"] {
+  opacity: 0.8;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* High Contrast Focus States */
+.high-contrast *:focus {
+  outline: 3px solid #ffff00 !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+/* Improved Button States for Accessibility */
+button[aria-pressed="true"],
+[role="button"][aria-pressed="true"] {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+button[aria-expanded="true"],
+[role="button"][aria-expanded="true"] {
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+/* Loading States Accessibility */
+[aria-busy="true"] {
+  cursor: wait;
+}
+
+[aria-busy="true"] * {
+  pointer-events: none;
+}
+
+/* Error States */
+[aria-invalid="true"] {
+  border-color: var(--destructive) !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+}
+
+/* Live Region Styling */
+[aria-live] {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Tooltip Accessibility */
+[role="tooltip"] {
+  background: #1f2937;
+  color: #ffffff;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  max-width: 320px;
+  z-index: 9999;
+}
+
+.high-contrast [role="tooltip"] {
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+/* Dialog Accessibility */
+[role="dialog"] {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+[role="dialog"]:focus {
+  outline: none;
+}
+
+/* Menu Accessibility */
+[role="menu"] {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+[role="menuitem"]:focus {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  outline: none;
+}
+
+/* Progress Indicators */
+[role="progressbar"] {
+  background: var(--muted);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+[role="progressbar"]::after {
+  content: attr(aria-valuenow) "% complete";
+  position: absolute;
+  left: -10000px;
+}
+
+/* Status Messages */
+[role="status"],
+[role="alert"] {
+  padding: 12px;
+  border-radius: 6px;
+  margin: 8px 0;
+}
+
+[role="alert"] {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+[role="status"] {
+  background: #f0f9ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.high-contrast [role="alert"] {
+  background: #000000;
+  color: #ff0000;
+  border: 2px solid #ff0000;
+}
+
+.high-contrast [role="status"] {
+  background: #000000;
+  color: #00ff00;
+  border: 2px solid #00ff00;
+}
+
+/* Responsive Accessibility */
+@media (max-width: 768px) {
+  .enhanced-focus *:focus {
+    outline-width: 4px !important;
+    outline-offset: 3px !important;
+  }
+  
+  .large-text {
+    font-size: 1.25rem; /* Even larger on mobile */
+  }
+}
+
+/* Print Accessibility */
+@media print {
+  .sr-only {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+  
+  [aria-hidden="true"] {
+    display: none !important;
+  }
+}
